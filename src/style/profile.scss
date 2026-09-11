@@ -1,0 +1,780 @@
+.profile-page {
+  position: relative;
+  min-height: 100vh;
+  padding: 32px;
+  overflow-x: hidden;
+
+  background:
+    radial-gradient(circle at 85% -5%, rgba(94, 181, 221, 0.09), transparent 35%),
+    radial-gradient(circle at -5% 100%, rgba(94, 181, 221, 0.05), transparent 30%),
+    #080b0f;
+  color: #fff;
+
+  * { box-sizing: border-box; }
+}
+
+// BACK BUTTON //
+.profile-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  max-width: 1180px;
+  margin: 0 auto 20px;
+  padding: 9px 16px 9px 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 30px;
+  background: #0d1116;
+  color: #aab5bf;
+
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    color: #5eb5dd;
+    border-color: rgba(94, 181, 221, 0.3);
+    background: #10161c;
+    transform: translateX(-2px);
+  }
+
+  &:active { transform: translateX(0); }
+}
+
+// GRID SHEL //
+.profile-grid {
+  max-width: 1180px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+
+// LEFT RAIL //
+.profile-rail {
+  position: relative;
+  overflow: hidden;
+
+  padding: 30px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 24px;
+
+  background:
+    linear-gradient(160deg, rgba(94, 181, 221, 0.09), rgba(255, 255, 255, 0.02)),
+    #0d1116;
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-rail__glow {
+  position: absolute;
+  left: -90px;
+  top: -110px;
+
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+
+  background: rgba(94, 181, 221, 0.16);
+  filter: blur(75px);
+  pointer-events: none;
+}
+
+.profile-avatar {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  margin-bottom: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+
+  background: linear-gradient(135deg, #5eb5dd, #287fa7);
+  box-shadow:
+    0 0 0 6px rgba(94, 181, 221, 0.08),
+    0 10px 35px rgba(94, 181, 221, 0.18);
+}
+
+.profile-avatar span {
+  font-size: 31px;
+  font-weight: 700;
+  color: #071017;
+}
+
+.profile-avatar__status {
+  position: absolute;
+  right: 2px;
+  bottom: 5px;
+
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+
+  background: #4ade80;
+  border: 3px solid #0d1116;
+}
+
+.profile-rail h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+
+.profile-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 9px;
+  padding: 5px 10px;
+  border-radius: 20px;
+
+  background: rgba(74, 222, 128, 0.08);
+  color: #37b268;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.profile-status i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+}
+
+.profile-username {
+  margin: 12px 0 0;
+  color: #5eb5dd;
+  font-size: 13px;
+}
+
+.profile-email {
+  margin: 5px 0 0;
+  color: #a5adb7;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.profile-joined {
+  margin: 5px 0 0;
+  color: #68717c;
+  font-size: 11px;
+}
+
+.profile-rail__divider {
+  width: 100%;
+  height: 1px;
+  margin: 22px 0;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.profile-pills {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.profile-pill {
+  min-width: 0; 
+  padding: 14px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  background: #10151b;
+
+  transition: transform 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(94, 181, 221, 0.22);
+  }
+}
+
+.profile-pill__icon {
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+
+  background: rgba(94, 181, 221, 0.08);
+  color: #5eb5dd;
+}
+
+.profile-pill strong {
+  display: block;
+  overflow-wrap: break-word;
+  font-size: 16px;
+  color: #f4f7f9;
+}
+
+.profile-pill span {
+  display: block;
+  margin-top: 3px;
+  color: #707985;
+  font-size: 10px;
+}
+
+.profile-hero__badge {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-hero__badge span {
+  color: #68717c;
+  font-size: 10px;
+}
+
+.profile-hero__badge strong {
+  margin-top: 2px;
+  color: #dce5ec;
+  font-size: 12px;
+}
+
+
+// MAIN COLUMN //
+.profile-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0; 
+}
+
+
+// PERFORMANCE (radial ring)
+.profile-performance {
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  background: #0d1116;
+}
+
+.profile-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  row-gap: 12px;
+  margin-bottom: 6px;
+}
+
+.profile-section-heading > div:first-child {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.profile-section-heading span,
+.profile-reports__eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  color: #5eb5dd;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.profile-section-heading h2,
+.profile-reports__header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.performance-ring {
+  position: relative;
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  circle {
+    fill: none;
+    stroke-width: 6;
+  }
+
+  &__track { stroke: #181e24; }
+  &__fill {
+    stroke: #5eb5dd;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.8s ease;
+  }
+
+  &.score--high &__fill { stroke: #55d991; }
+  &.score--mid  &__fill { stroke: #e5b85c; }
+  &.score--low  &__fill { stroke: #ed6b75; }
+
+  strong {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #f4f7f9;
+  }
+}
+
+.performance-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  row-gap: 6px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+}
+
+.performance-footer span,
+.performance-footer strong {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.performance-footer span { color: #68717c; }
+.performance-footer strong { color: #aab5bf; }
+
+
+// REPORTS //
+.profile-reports {
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  background: #0d1116;
+}
+
+.profile-reports__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.profile-reports__count {
+  min-width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+
+  background: rgba(94, 181, 221, 0.1);
+  color: #5eb5dd;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.profile-reports__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-reports__skeleton {
+  height: 68px;
+  border-radius: 15px;
+  background: linear-gradient(90deg, #10151b 25%, #141a20 37%, #10151b 63%);
+  background-size: 400% 100%;
+  animation: profile-shimmer 1.4s ease infinite;
+}
+
+@keyframes profile-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+
+// Report card //
+.report-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  max-width: 100%;
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  background: #10151b;
+
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    transform: translateX(3px);
+    background: #131a21;
+    border-color: rgba(94, 181, 221, 0.18);
+  }
+}
+
+.report-card--confirming {
+  z-index: 30;
+}
+
+.report-card__icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+
+  background: linear-gradient(135deg, rgba(94, 181, 221, 0.15), rgba(94, 181, 221, 0.04));
+  color: #5eb5dd;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.report-card__info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.report-card__info h3 {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.report-card__meta {
+  display: flex;
+  gap: 7px;
+  margin-top: 5px;
+  color: #626c76;
+  font-size: 11px;
+  overflow: hidden;
+}
+
+
+// Score //
+.report-card__score {
+  flex-shrink: 0;
+  min-width: 44px;
+  text-align: right;
+}
+
+.report-card__score strong {
+  display: block;
+  white-space: nowrap;
+  font-size: 17px;
+}
+
+.report-card__score span {
+  display: block;
+  margin-top: 2px;
+  color: #626c76;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+
+// Score colors  //
+.score--high { color: #55d991; }
+.score--mid  { color: #e5b85c; }
+.score--low  { color: #ed6b75; }
+
+
+// Delete button //
+.report-card__actions {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.report-card__delete {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 9px;
+
+  background: transparent;
+  color: #e87979;
+  cursor: pointer;
+  opacity: 0.45;
+
+  transition: opacity 0.2s ease, background 0.2s ease;
+
+  &:hover { background: rgba(239, 68, 68, 0.1); }
+}
+
+.report-card:hover .report-card__delete {
+  opacity: 1;
+}
+
+
+// Confirmation popover //
+.report-card__confirm {
+  position: absolute;
+  z-index: 20;
+  right: 0;
+  top: 42px;
+
+  width: 190px;
+  padding: 13px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: #171d23;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+
+  p {
+    margin: 0 0 10px;
+    color: #d9e0e5;
+    font-size: 12px;
+  }
+
+  div {
+    display: flex;
+    gap: 7px;
+  }
+
+  button {
+    flex: 1;
+    padding: 7px;
+    border: 0;
+    border-radius: 7px;
+    font-size: 11px;
+    cursor: pointer;
+  }
+}
+
+.report-card__confirm-yes {
+  background: #d95757;
+  color: #fff;
+}
+
+.report-card__confirm-no {
+  background: #252c33;
+  color: #aab3bc;
+}
+
+
+// Empty state //
+.profile-reports__empty {
+  padding: 55px 20px;
+  text-align: center;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+.profile-reports__empty-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+
+  background: rgba(94, 181, 221, 0.08);
+  color: #5eb5dd;
+  font-size: 22px;
+}
+
+.profile-reports__empty h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.profile-reports__empty p {
+  max-width: 380px;
+  margin: 8px auto 20px;
+  color: #69737e;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.profile-reports__empty button {
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 9px;
+
+  background: #5eb5dd;
+  color: #071017;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: transform 0.2s ease;
+
+  &:hover { transform: translateY(-2px); }
+}
+
+
+// RESPONSIVE //
+@media (max-width: 900px) {
+  .profile-page { padding: 24px 16px; }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .profile-rail {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 26px 20px;
+  }
+
+  .profile-pills { grid-template-columns: repeat(2, 1fr); }
+  .profile-hero__badge { display: none; }
+}
+
+@media (max-width: 768px) {
+  // Delete-confirm popover: anchor to the viewport, not the tiny
+  // ~34px actions button, so it can never push off-screen.
+  .report-card__confirm {
+    position: fixed;
+    z-index: 50;
+    top: auto;
+    right: auto;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: min(90vw, 260px);
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-page { padding: 16px; }
+
+  .profile-back {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .profile-rail { padding: 20px; }
+
+  .profile-avatar {
+    width: 68px;
+    height: 68px;
+
+    span { font-size: 26px; }
+  }
+
+  .profile-rail h1 { font-size: 20px; }
+
+  .profile-pill strong { font-size: 14px; }
+
+  .profile-performance,
+  .profile-reports {
+    padding: 18px;
+  }
+
+  .performance-ring { width: 52px; height: 52px; }
+  .performance-ring strong { font-size: 12px; }
+
+
+  // Keep report cards on a single row — everything shrinks to fit instead of wrapping onto a second line. //
+  .report-card {
+    gap: 10px;
+    padding: 12px 10px;
+  }
+
+  .report-card__icon {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .report-card__info h3 {
+    font-size: 13px;
+  }
+
+  .report-card__meta {
+    font-size: 10px;
+    gap: 5px;
+  }
+
+  .report-card__score {
+    min-width: 40px;
+  }
+
+  .report-card__score strong { font-size: 13px; }
+  .report-card__score span { font-size: 8px; }
+
+  .report-card__delete {
+    width: 30px;
+    height: 30px;
+  }
+
+  // Delete button has no :hover on touch devices — keep it visible.
+  .report-card__delete { opacity: 1; }
+}
+
+@media (max-width: 400px) {
+  .profile-pills {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .profile-pill { padding: 10px 6px; }
+  .profile-pill strong { font-size: 13px; }
+
+  // Hide both the "AI Interview" label AND the "•" separator before it —
+  // hiding only the label would leave a dangling bullet with nothing after it.
+  .report-card__meta span:nth-child(2),
+  .report-card__meta span:last-child {
+    display: none;
+  }
+
+  .report-card {
+    gap: 8px;
+    padding: 10px 8px;
+  }
+
+  .report-card__icon {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .report-card__score { min-width: 36px; }
+  .report-card__score strong { font-size: 12px; }
+  .report-card__score span { font-size: 7px; }
+
+  .report-card__delete {
+    width: 26px;
+    height: 26px;
+  }
+}
