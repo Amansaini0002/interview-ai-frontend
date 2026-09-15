@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { FiBriefcase, FiUser, FiUploadCloud, FiInfo, FiZap, FiFileText, FiX, FiCheckCircle, FiLoader } from "react-icons/fi";
+import { HiSparkles } from "react-icons/hi2";
 
 import "../style/home.scss";
 import { useInterview } from "../hooks/useInterview.js";
 import { useAuth } from "../../auth/hooks/useAuth.js";
 import { useToastContext } from "../../../Toast/Toast.jsx";
+import ProfileBuilder from "../components/ProfileBuilder.jsx";
+import { createProfile, getProfile, updateProfile, deleteProfile } from "../services/profile.api.js";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB //
 const MAX_JOB_DESCRIPTION = 5000;
@@ -53,6 +56,71 @@ const Home = () => {
   const [dragActive, setDragActive] = useState(false);
   const [fileError, setFileError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showProfileBuilder, setShowProfileBuilder] = useState(false);
+  const [candidateProfile, setCandidateProfile] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [showReplaceConfirm, setShowReplaceConfirm] = useState(null);
+
+  const handleProfileSubmit = async (profile) => {
+    try {
+      let data;
+
+      if (candidateProfile) {
+        data = await updateProfile(profile);
+      } else {
+        data = await createProfile(profile);
+      }
+
+      setCandidateProfile(data.profile);
+      setShowProfileBuilder(false);
+
+      showToast(
+        candidateProfile ? "Profile updated successfully." : "Profile created successfully.", "success" );
+    } catch (error) {
+      console.error("Profile save error:", error);
+
+      showToast(
+        error.response?.data?.message || "Failed to save profile. Please try again.", "error" );
+    }
+  };
+
+  const handleReplaceProfile = async () => {
+    try {
+      await deleteProfile();
+
+      setCandidateProfile(null);
+      setShowReplaceConfirm(false);
+      setShowProfileBuilder(true);
+
+      showToast("Profile deleted. You can build a new profile.", "success");
+    } catch (error) {
+      console.error("Delete profile error:", error);
+
+      showToast(
+        error.response?.data?.message || "Failed to delete profile. Please try again.", "error" );
+    }
+  };
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const data = await getProfile();
+
+        setCandidateProfile(data.profile);
+      } catch (error) {
+        // 404 simply means the user has not created a profile yet //
+        if (error.response?.status !== 404) {
+          console.error("Failed to load candidate profile:", error);
+        }
+
+        setCandidateProfile(null);
+      } finally {
+        setProfileLoading(false);
+      }
+    };
+
+    loadProfile();
+  }, []);
 
   const generating = loading || isSubmitting;
   const userName = user?.username || user?.name || "Your";
@@ -69,7 +137,7 @@ const Home = () => {
     const stepDuration = 5000; // ms per step, tuned to the ~20-30s total wait //
     const interval = setInterval(() => {
       setActiveStep((prev) =>
-        prev < GENERATION_STEPS.length - 1 ? prev + 1 : prev
+        prev < GENERATION_STEPS.length - 1 ? prev + 1 : prev,
       );
     }, stepDuration);
 
@@ -121,9 +189,11 @@ const Home = () => {
     if (!trimmedJob) {
       return showToast("Please enter a job description.", "error");
     }
-    if (!resumeFile && !trimmedSelf) {
-      return showToast( "Please upload a resume or provide a self description.", "error" );
+
+    if (!resumeFile && !trimmedSelf && !candidateProfile) {
+      return showToast( "Please upload a resume, provide a self description, or build your profile.", "error" );
     }
+
     if (resumeFile) {
       const error = validateResume(resumeFile);
       if (error) {
@@ -139,17 +209,21 @@ const Home = () => {
         jobDescription: trimmedJob,
         selfDescription: trimmedSelf,
         resumeFile,
+        candidateProfile,
       });
 
       if (!data) {
-        return showToast( "Failed to generate your interview strategy. Please try again.", "error" );
+        return showToast(
+          "Failed to generate your interview strategy. Please try again.",
+          "error",
+        );
       }
 
       showToast("Interview strategy generated successfully.", "success");
       navigate(`/interview/${data._id}`);
     } catch (error) {
       console.error("Generate interview report error:", error);
-      showToast(error?.message || "Something went wrong. Please try again.", "error");
+      showToast( error?.message || "Something went wrong. Please try again.", "error" );
     } finally {
       setIsSubmitting(false);
     }
@@ -161,7 +235,10 @@ const Home = () => {
         <h1>
           Your AI-Powered <span className="highlight">Interview Coach</span>
         </h1>
-        <p> AI analyzes your profile and job requirements to create a focused preparation plan for your target role.
+        <p>
+          {" "}
+          AI analyzes your profile and job requirements to create a focused
+          preparation plan for your target role.
         </p>
       </header>
 
@@ -219,8 +296,12 @@ const Home = () => {
                     <span>{(resumeFile.size / 1024 / 1024).toFixed(2)} MB</span>
                   </div>
 
-                  <FiCheckCircle className="resume-selected__success" size={17} />
-                  <button type="button"
+                  <FiCheckCircle
+                    className="resume-selected__success"
+                    size={17}
+                  />
+                  <button
+                    type="button"
                     className="resume-selected__remove"
                     onClick={handleRemoveResume}
                     disabled={generating}
@@ -231,8 +312,9 @@ const Home = () => {
                   </button>
                 </div>
               ) : (
-                <label htmlFor="resume"
-                  className={`dropzone ${dragActive ? "dropzone--active" : ""} ${ fileError ? "dropzone--error" : "" }`}
+                <label
+                  htmlFor="resume"
+                  className={`dropzone ${dragActive ? "dropzone--active" : ""} ${fileError ? "dropzone--error" : ""}`}
                   onDragOver={(e) => {
                     e.preventDefault();
                     setDragActive(true);
@@ -251,7 +333,8 @@ const Home = () => {
                     {dragActive ? "Drop your resume here" : "Click to upload or drag & drop"}
                   </p>
                   <p className="dropzone__subtitle">PDF or DOCX (Max 5MB)</p>
-                  <input ref={resumeInputRef}
+                  <input
+                    ref={resumeInputRef}
                     hidden
                     type="file"
                     id="resume"
@@ -276,7 +359,8 @@ const Home = () => {
               </label>
 
               <div className="textarea-wrapper">
-                <textarea id="selfDescription"
+                <textarea
+                  id="selfDescription"
                   name="selfDescription"
                   className="panel__textarea panel__textarea--short"
                   value={selfDescription}
@@ -291,13 +375,72 @@ const Home = () => {
               </div>
             </div>
 
+            {candidateProfile && !selfDescription.trim() && (
+              <p className="field-hint">
+                <HiSparkles size={13} />
+                Your self-description will be automatically generated from your
+                profile.
+              </p>
+            )}
+
+            {profileLoading ? (
+              <div className="profile-loading">
+                <FiLoader className="spin" size={16} />
+                Loading your profile...
+              </div>
+            ) : candidateProfile ? (
+              <div className="profile-ready">
+                <div className="profile-ready__icon">
+                  <FiCheckCircle size={18} />
+                </div>
+
+                <div className="profile-ready__content">
+                  <strong>Profile Ready</strong>
+                  <span>
+                    {candidateProfile.name || "Your"}'s profile is ready for AI
+                    preparation.
+                  </span>
+                </div>
+
+                <div className="profile-ready__actions">
+                  <button type="button"
+                    className="profile-ready__edit"
+                    onClick={() => setShowProfileBuilder(true)}
+                    disabled={generating}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    className="profile-ready__replace"
+                    onClick={() => setShowReplaceConfirm(true)}
+                    disabled={generating}
+                  >
+                    Replace
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="build-profile-button"
+                onClick={() => setShowProfileBuilder(true)}
+                disabled={generating}
+              >
+                <HiSparkles size={16} />
+                Build My Profile
+              </button>
+            )}
+
             <div className="info-box">
               <span className="info-box__icon">
                 <FiInfo size={16} />
               </span>
 
-              <p> Either a <strong>Resume</strong> or a{" "}
-                <strong>Self Description</strong> is required to generate a
+              <p>
+                A <strong>Resume</strong>, <strong>Self Description</strong>, or{" "}
+                <strong>Candidate Profile</strong> is required to generate a
                 personalized plan.
               </p>
             </div>
@@ -309,7 +452,8 @@ const Home = () => {
             {generating ? "AI is analyzing your profile..." : "Personalized Interview Strategy • Ready in 30s"}
           </span>
 
-          <button type="button"
+          <button
+            type="button"
             className={`generate-btn ${generating ? "generate-btn--loading" : ""}`}
             onClick={handleGenerateReport}
             disabled={generating}
@@ -340,7 +484,8 @@ const Home = () => {
 
             <div className="generation-steps">
               {GENERATION_STEPS.map((step, i) => (
-                <div key={step}
+                <div
+                  key={step}
                   className={`generation-step ${i === activeStep ? "generation-step--active" : ""} ${i < activeStep ? "generation-step--done" : ""}`}
                 >
                   <span />
@@ -354,6 +499,47 @@ const Home = () => {
             </div>
 
             <small>This usually takes around 20–30 seconds.</small>
+          </div>
+        </div>
+      )}
+
+      {showProfileBuilder && (
+        <ProfileBuilder
+          initialProfile={candidateProfile}
+          onClose={() => setShowProfileBuilder(false)}
+          onSubmit={handleProfileSubmit}
+        />
+      )}
+
+      {showReplaceConfirm && (
+        <div className="replace-profile-overlay">
+          <div className="replace-profile-modal">
+            <div className="replace-profile-modal__icon">
+              <FiUser size={20} />
+            </div>
+
+            <h3>Replace Your Profile?</h3>
+
+            <p>
+              Your current profile will be cleared and you can create a new
+              profile.
+            </p>
+
+            <div className="replace-profile-modal__actions">
+              <button type="button"
+                className="replace-profile-modal__cancel"
+                onClick={() => setShowReplaceConfirm(false)}
+              >
+                Cancel
+              </button>
+
+              <button type="button"
+                className="replace-profile-modal__confirm"
+                onClick={handleReplaceProfile}
+              >
+                Replace Profile
+              </button>
+            </div>
           </div>
         </div>
       )}

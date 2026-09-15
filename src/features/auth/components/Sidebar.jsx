@@ -30,8 +30,7 @@ const Sidebar = () => {
   const handleDelete = (event, reportId) => {
     event.stopPropagation();
 
-    showConfirm(
-      "Delete this interview report?",
+    showConfirm( "Delete this interview report?",
       async () => {
         await deleteReport(reportId);
 
@@ -81,8 +80,7 @@ const Sidebar = () => {
       <aside className={`sidebar ${isOpen ? "sidebar--open" : ""}`}>
         {/* New Interview */}
         <div className="sidebar__header">
-          <button type="button"
-            className="sidebar__new-interview"
+          <button type="button" className="sidebar__new-interview"
             onClick={handleNewInterview}
           >
             <span className="sidebar__new-icon">+</span>
@@ -144,8 +142,7 @@ const Sidebar = () => {
               </div>
             ) : (
               reports.map((report) => {
-                const isActive =
-                  location.pathname === `/interview/${report._id}`;
+                const isActive = location.pathname === `/interview/${report._id}`;
 
                 return (
                   <div key={report._id}
@@ -198,8 +195,7 @@ const Sidebar = () => {
             </div>
           </div>
 
-          <button
-            type="button"
+          <button type="button"
             className="sidebar__logout"
             onClick={handleLogout}
             aria-label="Log out"

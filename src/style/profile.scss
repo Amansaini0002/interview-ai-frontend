@@ -1,136 +1,279 @@
+// ============================================================
+// PROFILE PAGE — design tokens
+// ============================================================
+// One place to tune the whole page. Swap $accent for a full
+// re-skin; every color below derives from these few values.
+
+$bg:            #07090d;
+$bg-panel:      #0c1015;
+$bg-panel-alt:  #10151b;
+$bg-panel-hi:   #131a21;
+
+$border:        rgba(255, 255, 255, 0.07);
+$border-hi:     rgba(255, 255, 255, 0.14);
+
+$text-primary:   #f3f7f9;
+$text-secondary: #9aa5b1;
+$text-muted:     #62707c;
+
+$accent:        #4fd1c5;   // signature teal — replaces the old flat blue
+$accent-dim:    rgba(79, 209, 197, 0.12);
+$accent-glow:   rgba(79, 209, 197, 0.22);
+
+$gold:          #e8b25c;   // secondary accent, used sparingly (badges, mid score)
+$good:          #4ade80;
+$warn:          #e8b25c;
+$bad:           #f0707d;
+
+$radius-lg:  22px;
+$radius-md:  16px;
+$radius-sm:  10px;
+
+$shadow-panel: 0 24px 60px rgba(0, 0, 0, 0.35);
+
+// ============================================================
+// Mixins — the patterns repeated across every card on this page
+// ============================================================
+
+@mixin panel {
+  position: relative;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.025), transparent 55%), $bg-panel;
+  box-shadow: $shadow-panel;
+  overflow: hidden;
+}
+
+// thin gradient hairline across the top edge of a panel
+@mixin top-hairline($inset: 28px) {
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: $inset;
+    right: $inset;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $accent-glow, transparent);
+  }
+}
+
+@mixin lift-on-hover($distance: -2px) {
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+
+  &:hover {
+    transform: translateY($distance);
+    border-color: rgba(79, 209, 197, 0.25);
+  }
+}
+
+@mixin eyebrow {
+  display: block;
+  margin-bottom: 6px;
+  color: $accent;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+@mixin thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(79, 209, 197, 0.25) transparent;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(79, 209, 197, 0.25);
+    border-radius: 10px;
+
+    &:hover {
+      background: rgba(79, 209, 197, 0.45);
+    }
+  }
+}
+
+@mixin icon-badge($size: 32px) {
+  flex-shrink: 0;
+  width: $size;
+  height: $size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(79, 209, 197, 0.14);
+  border-radius: 9px;
+  background: $accent-dim;
+  color: $accent;
+
+  svg {
+    width: 45%;
+    height: 45%;
+  }
+}
+
+// score → color, used by pills, the readiness ring, and report cards
+@mixin score-tiers($property: color) {
+  &.score--high { #{$property}: $good; }
+  &.score--mid  { #{$property}: $warn; }
+  &.score--low  { #{$property}: $bad; }
+}
+
+// ============================================================
+// PAGE SHELL
+// ============================================================
+
 .profile-page {
   position: relative;
   min-height: 100vh;
   padding: 32px;
   overflow-x: hidden;
-
+  color: $text-primary;
   background:
-    radial-gradient(circle at 85% -5%, rgba(94, 181, 221, 0.09), transparent 35%),
-    radial-gradient(circle at -5% 100%, rgba(94, 181, 221, 0.05), transparent 30%),
-    #080b0f;
-  color: #fff;
+    radial-gradient(circle at 85% 0%, $accent-glow, transparent 32%),
+    radial-gradient(circle at 0% 75%, rgba(79, 209, 197, 0.05), transparent 30%),
+    $bg;
 
-  * { box-sizing: border-box; }
+  * {
+    box-sizing: border-box;
+  }
 }
 
-// BACK BUTTON //
 .profile-back {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-
-  max-width: 1180px;
+  max-width: 1240px;
   margin: 0 auto 20px;
   padding: 9px 16px 9px 12px;
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid $border;
   border-radius: 30px;
-  background: #0d1116;
-  color: #aab5bf;
-
+  background: $bg-panel;
+  color: $text-secondary;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-
   transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
 
+  svg { width: 14px; height: 14px; }
+
   &:hover {
-    color: #5eb5dd;
-    border-color: rgba(94, 181, 221, 0.3);
-    background: #10161c;
+    color: $accent;
+    border-color: rgba(79, 209, 197, 0.3);
+    background: $bg-panel-alt;
     transform: translateX(-2px);
   }
 
-  &:active { transform: translateX(0); }
+  &:active {
+    transform: translateX(0);
+  }
 }
 
-// GRID SHEL //
 .profile-grid {
-  max-width: 1180px;
+  max-width: 1240px;
   margin: 0 auto;
-
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 20px;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 24px;
   align-items: start;
 }
 
+// ============================================================
+// LEFT RAIL — identity + stats
+// ============================================================
 
-// LEFT RAIL //
 .profile-rail {
-  position: relative;
-  overflow: hidden;
+  @include panel;
+  @include thin-scrollbar;
 
-  padding: 30px 26px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 24px;
-
-  background:
-    linear-gradient(160deg, rgba(94, 181, 221, 0.09), rgba(255, 255, 255, 0.02)),
-    #0d1116;
-
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  position: sticky;
+  top: 28px;
+  max-height: calc(100vh - 56px);
+  padding: 28px 22px;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 35%);
+  }
 }
 
 .profile-rail__glow {
   position: absolute;
   left: -90px;
   top: -110px;
-
   width: 220px;
   height: 220px;
   border-radius: 50%;
-
-  background: rgba(94, 181, 221, 0.16);
+  background: rgba(79, 209, 197, 0.18);
   filter: blur(75px);
   pointer-events: none;
 }
 
 .profile-avatar {
   position: relative;
-  width: 84px;
-  height: 84px;
-  margin-bottom: 16px;
-
+  width: 82px;
+  height: 82px;
+  margin-bottom: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-
-  background: linear-gradient(135deg, #5eb5dd, #287fa7);
+  background: linear-gradient(135deg, #6be0d1, #2c8a7d);
   box-shadow:
-    0 0 0 6px rgba(94, 181, 221, 0.08),
-    0 10px 35px rgba(94, 181, 221, 0.18);
-}
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 0 7px $accent-dim,
+    0 15px 40px rgba(79, 209, 197, 0.2);
 
-.profile-avatar span {
-  font-size: 31px;
-  font-weight: 700;
-  color: #071017;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 1px solid rgba(79, 209, 197, 0.2);
+    opacity: 0.8;
+  }
+
+  span {
+    font-size: 29px;
+    font-weight: 750;
+    letter-spacing: -1px;
+    color: #06110f;
+  }
 }
 
 .profile-avatar__status {
   position: absolute;
   right: 2px;
   bottom: 5px;
-
   width: 14px;
   height: 14px;
   border-radius: 50%;
-
-  background: #4ade80;
-  border: 3px solid #0d1116;
+  background: $good;
+  border: 3px solid $bg-panel;
 }
 
-.profile-rail h1 {
+.profile-name {
+  width: 100%;
   margin: 0;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.4px;
+  padding: 0 4px;
+  font-size: clamp(16px, 4.5vw, 21px);
+  font-weight: 750;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+  color: $text-primary;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .profile-status {
@@ -140,36 +283,39 @@
   margin-top: 9px;
   padding: 5px 10px;
   border-radius: 20px;
-
   background: rgba(74, 222, 128, 0.08);
   color: #37b268;
   font-size: 11px;
   font-weight: 600;
-}
 
-.profile-status i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #4ade80;
+  i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: $good;
+  }
 }
 
 .profile-username {
-  margin: 12px 0 0;
-  color: #5eb5dd;
-  font-size: 13px;
+  margin: 8px 0 0;
+  color: $accent;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-.profile-email {
+.profile-email,
+.profile-location {
+  max-width: 230px;
   margin: 5px 0 0;
-  color: #a5adb7;
-  font-size: 13px;
-  word-break: break-all;
+  color: $text-secondary;
+  font-size: 11px;
+  line-height: 1.5;
+  word-break: break-word;
 }
 
 .profile-joined {
   margin: 5px 0 0;
-  color: #68717c;
+  color: $text-muted;
   font-size: 11px;
 }
 
@@ -177,8 +323,13 @@
   width: 100%;
   height: 1px;
   margin: 22px 0;
-  background: rgba(255, 255, 255, 0.06);
+  background: $border;
+  flex-shrink: 0;
 }
+
+// ============================================================
+// STAT PILLS
+// ============================================================
 
 .profile-pills {
   width: 100%;
@@ -188,46 +339,58 @@
 }
 
 .profile-pill {
-  min-width: 0; 
-  padding: 14px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 14px;
-  background: #10151b;
+  @include lift-on-hover;
 
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  min-width: 0;
+  padding: 13px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 13px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.005)), $bg-panel-alt;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $accent-glow, transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
 
   &:hover {
-    transform: translateY(-2px);
-    border-color: rgba(94, 181, 221, 0.22);
+    background: $bg-panel-hi;
+
+    &::before { opacity: 1; }
   }
 }
 
 .profile-pill__icon {
-  width: 30px;
-  height: 30px;
-  margin: 0 auto 8px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9px;
-
-  background: rgba(94, 181, 221, 0.08);
-  color: #5eb5dd;
+  @include icon-badge(28px);
+  margin: 0 auto 7px;
 }
 
-.profile-pill strong {
-  display: block;
-  overflow-wrap: break-word;
-  font-size: 16px;
-  color: #f4f7f9;
-}
+.profile-pill {
+  strong {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 16px;
+    color: $text-primary;
 
-.profile-pill span {
-  display: block;
-  margin-top: 3px;
-  color: #707985;
-  font-size: 10px;
+    @include score-tiers;
+  }
+
+  span {
+    display: block;
+    margin-top: 3px;
+    color: $text-muted;
+    font-size: 10px;
+  }
 }
 
 .profile-hero__badge {
@@ -235,35 +398,29 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-shrink: 0;
+
+  span {
+    color: $text-muted;
+    font-size: 10px;
+  }
+
+  strong {
+    margin-top: 2px;
+    color: #dce5ec;
+    font-size: 12px;
+  }
 }
 
-.profile-hero__badge span {
-  color: #68717c;
-  font-size: 10px;
-}
+// ============================================================
+// MAIN COLUMN
+// ============================================================
 
-.profile-hero__badge strong {
-  margin-top: 2px;
-  color: #dce5ec;
-  font-size: 12px;
-}
-
-
-// MAIN COLUMN //
 .profile-main {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  min-width: 0; 
-}
-
-
-// PERFORMANCE (radial ring)
-.profile-performance {
-  padding: 26px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 20px;
-  background: #0d1116;
+  min-width: 0;
 }
 
 .profile-section-heading {
@@ -273,66 +430,74 @@
   flex-wrap: wrap;
   row-gap: 12px;
   margin-bottom: 6px;
+
+  > div:first-child {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  span { @include eyebrow; }
+
+  h2 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: $text-primary;
+  }
 }
 
-.profile-section-heading > div:first-child {
-  min-width: 0;
-  flex: 1 1 auto;
-}
+// ============================================================
+// PERFORMANCE
+// ============================================================
 
-.profile-section-heading span,
-.profile-reports__eyebrow {
-  display: block;
-  margin-bottom: 5px;
-  color: #5eb5dd;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-}
+.profile-performance {
+  @include panel;
+  @include top-hairline;
 
-.profile-section-heading h2,
-.profile-reports__header h2 {
-  margin: 0;
-  font-size: 20px;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 100% 0%, $accent-dim, transparent 38%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.025), transparent 55%),
+    $bg-panel;
 }
 
 .performance-ring {
   position: relative;
   flex-shrink: 0;
-  width: 64px;
-  height: 64px;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  filter: drop-shadow(0 8px 20px rgba(79, 209, 197, 0.12));
 
-  svg {
+  &__fill {
     width: 100%;
     height: 100%;
-    transform: rotate(-90deg);
+    border-radius: 50%;
+    background: conic-gradient($accent calc(var(--pct, 0) * 3.6deg), #181e24 0deg);
+    transition: background 0.8s ease;
   }
 
-  circle {
-    fill: none;
-    stroke-width: 6;
-  }
-
-  &__track { stroke: #181e24; }
-  &__fill {
-    stroke: #5eb5dd;
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0.8s ease;
-  }
-
-  &.score--high &__fill { stroke: #55d991; }
-  &.score--mid  &__fill { stroke: #e5b85c; }
-  &.score--low  &__fill { stroke: #ed6b75; }
-
-  strong {
+  &__hole {
     position: absolute;
-    inset: 0;
+    inset: 8px;
+    border-radius: 50%;
+    background: $bg-panel;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    font-weight: 700;
-    color: #f4f7f9;
+  }
+
+  @each $tier, $color in (high: $good, mid: $warn, low: $bad) {
+    &.score--#{$tier} &__fill {
+      background: conic-gradient(#{$color} calc(var(--pct, 0) * 3.6deg), #181e24 0deg);
+    }
+  }
+
+  strong {
+    font-size: 16px;
+    font-weight: 750;
+    color: $text-primary;
   }
 }
 
@@ -343,26 +508,167 @@
   row-gap: 6px;
   margin-top: 18px;
   padding-top: 16px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.06);
+  border-top: 1px dashed $border;
   font-size: 12px;
+
+  span, strong {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  span   { color: $text-muted; }
+  strong { color: $text-secondary; }
 }
 
-.performance-footer span,
-.performance-footer strong {
+// ============================================================
+// CAREER SNAPSHOT — lives inside the left rail, under the stats
+// ============================================================
+// Unlike the other sections this one nests inside an existing
+// panel (.profile-rail), so it stays flat — no border/shadow of
+// its own — and its heading is left-aligned instead of centered
+// to read as a distinct sub-section rather than a duplicate card.
+
+.profile-snapshot {
+  width: 100%;
+  text-align: left;
+
+  .profile-section-heading {
+    margin-bottom: 4px;
+
+    h2 {
+      font-size: 15px;
+    }
+  }
+}
+
+.profile-snapshot__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.profile-snapshot__item {
+  @include lift-on-hover;
+
+  position: relative;
   min-width: 0;
-  overflow-wrap: break-word;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  background: $bg-panel-alt;
+  text-align: left;
+
+  &:hover {
+    background: $bg-panel-hi;
+  }
 }
 
-.performance-footer span { color: #68717c; }
-.performance-footer strong { color: #aab5bf; }
+.profile-snapshot__item-icon {
+  @include icon-badge(28px);
+}
 
+.profile-snapshot__item-body {
+  min-width: 0;
+  flex: 1;
 
-// REPORTS //
+  > span {
+    display: block;
+    margin-bottom: 5px;
+    color: $text-muted;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+  }
+
+  > strong {
+    display: block;
+    overflow: hidden;
+    color: #e9eef2;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.profile-snapshot__skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  span {
+    padding: 5px 8px;
+    border: 1px solid rgba(79, 209, 197, 0.15);
+    border-radius: 6px;
+    background: rgba(79, 209, 197, 0.06);
+    color: #8fe6d8;
+    font-size: 10px;
+    font-weight: 600;
+    transition: border-color 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      border-color: rgba(79, 209, 197, 0.32);
+      background: rgba(79, 209, 197, 0.12);
+    }
+  }
+}
+
+.profile-snapshot__empty {
+  color: #5c656f !important;
+  font-weight: 500 !important;
+  font-style: italic;
+
+  &--block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 14px;
+    padding: 16px;
+    border: 1px dashed $border;
+    border-radius: 12px;
+    text-align: left;
+
+    strong {
+      color: $text-secondary !important;
+      font-style: normal;
+      font-size: 12px;
+    }
+
+    span {
+      color: $text-muted;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+  }
+}
+
+.profile-snapshot__loading {
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px dashed $border;
+  border-radius: 12px;
+  color: $text-muted;
+  font-size: 11px;
+  text-align: center;
+}
+
+// ============================================================
+// INTERVIEW HISTORY
+// ============================================================
+
 .profile-reports {
-  padding: 26px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 20px;
-  background: #0d1116;
+  @include panel;
+  @include top-hairline;
+
+  min-width: 0;
+  padding: 28px;
+  background: $bg-panel;
 }
 
 .profile-reports__header {
@@ -370,84 +676,94 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+
+  h2 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: $text-primary;
+  }
 }
+
+.profile-reports__eyebrow { @include eyebrow; }
 
 .profile-reports__count {
   min-width: 30px;
   height: 30px;
   flex-shrink: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 9px;
-
-  background: rgba(94, 181, 221, 0.1);
-  color: #5eb5dd;
+  background: $accent-dim;
+  color: $accent;
   font-size: 12px;
   font-weight: 700;
 }
 
 .profile-reports__list {
+  @include thin-scrollbar;
+
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-height: 620px;
+  overflow-y: auto;
+  padding-right: 6px;
+  margin-right: -6px;
 }
 
 .profile-reports__skeleton {
   height: 68px;
+  flex-shrink: 0;
   border-radius: 15px;
-  background: linear-gradient(90deg, #10151b 25%, #141a20 37%, #10151b 63%);
+  background: linear-gradient(90deg, $bg-panel-alt 25%, #141a20 37%, $bg-panel-alt 63%);
   background-size: 400% 100%;
   animation: profile-shimmer 1.4s ease infinite;
 }
 
 @keyframes profile-shimmer {
-  0% { background-position: 100% 50%; }
+  0%   { background-position: 100% 50%; }
   100% { background-position: 0 50%; }
 }
 
+// ============================================================
+// REPORT CARD
+// ============================================================
 
-// Report card //
 .report-card {
   position: relative;
   z-index: 1;
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 15px;
+  gap: 14px;
   max-width: 100%;
-
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 15px;
-  background: #10151b;
-
+  padding: 14px 15px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  border-radius: 14px;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0.018), transparent), $bg-panel-alt;
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    transform: translateX(3px);
-    background: #131a21;
-    border-color: rgba(94, 181, 221, 0.18);
+    transform: translateX(4px);
+    background: $bg-panel-hi;
+    border-color: rgba(79, 209, 197, 0.22);
+    box-shadow: -3px 0 0 $accent-glow;
+  }
+
+  &--confirming {
+    z-index: 30;
   }
 }
 
-.report-card--confirming {
-  z-index: 30;
-}
-
 .report-card__icon {
-  flex-shrink: 0;
-  width: 44px;
-  height: 44px;
+  @include icon-badge(44px);
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border-radius: 12px;
-
-  background: linear-gradient(135deg, rgba(94, 181, 221, 0.15), rgba(94, 181, 221, 0.04));
-  color: #5eb5dd;
+  background: linear-gradient(135deg, rgba(79, 209, 197, 0.16), rgba(79, 209, 197, 0.04));
   font-size: 17px;
   font-weight: 700;
 }
@@ -455,58 +771,57 @@
 .report-card__info {
   flex: 1 1 auto;
   min-width: 0;
-}
 
-.report-card__info h3 {
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 14px;
-  font-weight: 600;
+  h3 {
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 600;
+  }
 }
 
 .report-card__meta {
   display: flex;
   gap: 7px;
   margin-top: 5px;
-  color: #626c76;
+  color: $text-muted;
   font-size: 11px;
   overflow: hidden;
 }
 
-
-// Score //
 .report-card__score {
   flex-shrink: 0;
   min-width: 44px;
   text-align: right;
+
+  strong {
+    display: block;
+    white-space: nowrap;
+    font-size: 16px;
+    font-weight: 750;
+    letter-spacing: -0.3px;
+
+    @include score-tiers;
+  }
+
+  span {
+    display: block;
+    margin-top: 2px;
+    color: $text-muted;
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    white-space: nowrap;
+  }
 }
 
-.report-card__score strong {
-  display: block;
-  white-space: nowrap;
-  font-size: 17px;
-}
+// ============================================================
+// DELETE + CONFIRM
+// ============================================================
 
-.report-card__score span {
-  display: block;
-  margin-top: 2px;
-  color: #626c76;
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-}
-
-
-// Score colors  //
-.score--high { color: #55d991; }
-.score--mid  { color: #e5b85c; }
-.score--low  { color: #ed6b75; }
-
-
-// Delete button //
 .report-card__actions {
   position: relative;
   flex-shrink: 0;
@@ -515,39 +830,36 @@
 .report-card__delete {
   width: 34px;
   height: 34px;
-
   display: flex;
   align-items: center;
   justify-content: center;
   border: 0;
   border-radius: 9px;
-
   background: transparent;
-  color: #e87979;
+  color: $bad;
   cursor: pointer;
   opacity: 0.45;
-
   transition: opacity 0.2s ease, background 0.2s ease;
 
-  &:hover { background: rgba(239, 68, 68, 0.1); }
+  svg { width: 15px; height: 15px; }
+
+  &:hover {
+    background: rgba(240, 112, 125, 0.12);
+  }
 }
 
 .report-card:hover .report-card__delete {
   opacity: 1;
 }
 
-
-// Confirmation popover //
 .report-card__confirm {
   position: absolute;
   z-index: 20;
   right: 0;
   top: 42px;
-
   width: 190px;
   padding: 13px;
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid $border-hi;
   border-radius: 12px;
   background: #171d23;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
@@ -574,72 +886,75 @@
 }
 
 .report-card__confirm-yes {
-  background: #d95757;
+  background: $bad;
   color: #fff;
 }
 
 .report-card__confirm-no {
   background: #252c33;
-  color: #aab3bc;
+  color: $text-secondary;
 }
 
+// ============================================================
+// EMPTY STATE
+// ============================================================
 
-// Empty state //
 .profile-reports__empty {
   padding: 55px 20px;
   text-align: center;
-  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border: 1px dashed $border-hi;
   border-radius: 16px;
+
+  &-icon {
+    @include icon-badge(48px);
+
+    margin: 0 auto 15px;
+    border-radius: 14px;
+
+    svg { width: 40%; height: 40%; }
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 16px;
+  }
+
+  p {
+    max-width: 380px;
+    margin: 8px auto 20px;
+    color: $text-muted;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  button {
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 9px;
+    background: $accent;
+    color: #06110f;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
 }
 
-.profile-reports__empty-icon {
-  width: 48px;
-  height: 48px;
-  margin: 0 auto 15px;
+// ============================================================
+// RESPONSIVE
+// ============================================================
+// Three breakpoints cover the page: tablet (≤1024px) collapses the
+// grid to one column, phone (≤640px) tightens spacing/type, and a
+// small-phone tweak (≤380px) trims the report row further.
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 14px;
-
-  background: rgba(94, 181, 221, 0.08);
-  color: #5eb5dd;
-  font-size: 22px;
-}
-
-.profile-reports__empty h3 {
-  margin: 0;
-  font-size: 16px;
-}
-
-.profile-reports__empty p {
-  max-width: 380px;
-  margin: 8px auto 20px;
-  color: #69737e;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.profile-reports__empty button {
-  padding: 10px 18px;
-  border: 0;
-  border-radius: 9px;
-
-  background: #5eb5dd;
-  color: #071017;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-
-  transition: transform 0.2s ease;
-
-  &:hover { transform: translateY(-2px); }
-}
-
-
-// RESPONSIVE //
-@media (max-width: 900px) {
-  .profile-page { padding: 24px 16px; }
+@media (max-width: 1024px) {
+  .profile-page {
+    padding: 24px 16px;
+  }
 
   .profile-grid {
     grid-template-columns: 1fr;
@@ -647,19 +962,29 @@
   }
 
   .profile-rail {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    position: relative;
+    top: 0;
+    max-height: none;
+    overflow: visible;
     padding: 26px 20px;
   }
 
-  .profile-pills { grid-template-columns: repeat(2, 1fr); }
-  .profile-hero__badge { display: none; }
-}
+  .profile-reports__list {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+    margin-right: 0;
+  }
 
-@media (max-width: 768px) {
-  // Delete-confirm popover: anchor to the viewport, not the tiny
-  // ~34px actions button, so it can never push off-screen.
+  .profile-hero__badge {
+    display: none;
+  }
+
+  .profile-performance,
+  .profile-reports {
+    padding: 24px;
+  }
+
   .report-card__confirm {
     position: fixed;
     z-index: 50;
@@ -667,23 +992,24 @@
     right: auto;
     bottom: 24px;
     left: 50%;
-    transform: translateX(-50%);
-
     width: min(90vw, 260px);
-    box-sizing: border-box;
+    transform: translateX(-50%);
   }
 }
 
 @media (max-width: 640px) {
-  .profile-page { padding: 16px; }
+  .profile-page {
+    padding: 14px;
+  }
 
   .profile-back {
     width: 100%;
     justify-content: center;
-    box-sizing: border-box;
   }
 
-  .profile-rail { padding: 20px; }
+  .profile-rail {
+    padding: 20px;
+  }
 
   .profile-avatar {
     width: 68px;
@@ -692,20 +1018,28 @@
     span { font-size: 26px; }
   }
 
-  .profile-rail h1 { font-size: 20px; }
-
-  .profile-pill strong { font-size: 14px; }
+  .profile-pill strong {
+    font-size: 14px;
+  }
 
   .profile-performance,
   .profile-reports {
     padding: 18px;
+    border-radius: 18px;
   }
 
-  .performance-ring { width: 52px; height: 52px; }
-  .performance-ring strong { font-size: 12px; }
+  .performance-ring {
+    width: 58px;
+    height: 58px;
 
+    &__hole { inset: 7px; }
+    strong  { font-size: 12px; }
+  }
 
-  // Keep report cards on a single row — everything shrinks to fit instead of wrapping onto a second line. //
+  .profile-snapshot__item-body > strong {
+    white-space: normal;
+  }
+
   .report-card {
     gap: 10px;
     padding: 12px 10px;
@@ -728,31 +1062,29 @@
 
   .report-card__score {
     min-width: 40px;
-  }
 
-  .report-card__score strong { font-size: 13px; }
-  .report-card__score span { font-size: 8px; }
+    strong { font-size: 13px; }
+    span   { font-size: 8px; }
+  }
 
   .report-card__delete {
     width: 30px;
     height: 30px;
+    opacity: 1;
   }
-
-  // Delete button has no :hover on touch devices — keep it visible.
-  .report-card__delete { opacity: 1; }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 380px) {
   .profile-pills {
-    grid-template-columns: 1fr 1fr;
     gap: 8px;
   }
 
-  .profile-pill { padding: 10px 6px; }
-  .profile-pill strong { font-size: 13px; }
+  .profile-pill {
+    padding: 10px 6px;
 
-  // Hide both the "AI Interview" label AND the "•" separator before it —
-  // hiding only the label would leave a dangling bullet with nothing after it.
+    strong { font-size: 13px; }
+  }
+
   .report-card__meta span:nth-child(2),
   .report-card__meta span:last-child {
     display: none;
@@ -769,9 +1101,12 @@
     font-size: 13px;
   }
 
-  .report-card__score { min-width: 36px; }
-  .report-card__score strong { font-size: 12px; }
-  .report-card__score span { font-size: 7px; }
+  .report-card__score {
+    min-width: 36px;
+
+    strong { font-size: 12px; }
+    span   { font-size: 7px; }
+  }
 
   .report-card__delete {
     width: 26px;

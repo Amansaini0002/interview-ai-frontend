@@ -1,6 +1,8 @@
 @use "sass:color";
 
-// ── Variables ────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// Variables
+// ═══════════════════════════════════════════════════════════════════════════
 $bg-page:        #0d1117;
 $bg-card:        #161b22;
 $bg-input:       #1e2535;
@@ -9,22 +11,22 @@ $text-primary:   #e6edf3;
 $text-muted:     #7d8590;
 $accent:         #2aa2da;
 $danger:         #ff2d78;
-$badge-required: #90d4dbe9;
+$badge-required: #90d4db;
 $badge-best:     #7a909b;
 $info-bg:        #1b2a4a;
 $info-border:    #2d4a7a;
 $font-stack:     system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
 // ── Breakpoints ──────────────────────────────────────────────────────────────
-$bp-mobile:  480px;
-$bp-tablet:  1150px;
-$bp-desktop: 1280px;
+$bp-mobile: 480px;
+$bp-tablet: 1150px;
 
+@mixin mobile { @media (max-width: $bp-mobile) { @content; } }
+@mixin tablet { @media (max-width: $bp-tablet) { @content; } }
 
-@mixin mobile  { @media (max-width: $bp-mobile) { @content; } }
-@mixin tablet  { @media (max-width: $bp-tablet) { @content; } }
-
-// ── Page shell ───────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// Page shell
+// ═══════════════════════════════════════════════════════════════════════════
 .home-page {
   width: 100%;
   display: flex;
@@ -38,7 +40,8 @@ $bp-desktop: 1280px;
   font-family: $font-stack;
   box-sizing: border-box;
 
-  // only force full viewport height on larger screens where the two-column layout needs it
+  // Only force full viewport height on larger screens, where the
+  // two-column layout needs it to avoid an awkward short card.
   @media (min-width: #{$bp-tablet + 1px}) {
     min-height: 100vh;
     min-height: 100dvh;
@@ -47,9 +50,9 @@ $bp-desktop: 1280px;
   * { box-sizing: border-box; }
 }
 
-
-// ── Page header ──────────────────────────────────────────────────────────────
-// ── Page header ──────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// Page header
+// ═══════════════════════════════════════════════════════════════════════════
 .page-header {
   width: 100%;
   text-align: center;
@@ -60,9 +63,7 @@ $bp-desktop: 1280px;
     font-weight: 700;
     line-height: 1.2;
 
-    @include tablet {
-      font-size: clamp(1.3rem, 5vw, 2rem);
-    }
+    @include tablet { font-size: clamp(1.3rem, 5vw, 2rem); }
 
     @include mobile {
       font-size: clamp(1.15rem, 6.5vw, 1.6rem);
@@ -74,7 +75,7 @@ $bp-desktop: 1280px;
     max-width: min(480px, 90%);
     margin: 0 auto;
     color: $text-muted;
-    font-size: clamp(0.8rem, 3vw + 0.3rem, 0.95rem);   // fixed: was "3vm" (typo), now "3vw"
+    font-size: clamp(0.8rem, 3vw + 0.3rem, 0.95rem); // fixed: was "3vm" (typo), now "3vw"
     line-height: 1.6;
 
     @include tablet {
@@ -91,7 +92,9 @@ $bp-desktop: 1280px;
   .highlight { color: $accent; }
 }
 
-// ── Main card ──────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// Interview card
+// ═══════════════════════════════════════════════════════════════════════════
 .interview-card {
   width: 100%;
   max-width: 900px;
@@ -102,43 +105,38 @@ $bp-desktop: 1280px;
 
   &__body {
     display: flex;
-    min-height: unset;
 
-    @include tablet {
-      flex-direction: column;
-      min-height: unset;
-    }
+    @include tablet { flex-direction: column; }
   }
 
- &__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-  border-top: 1px solid $border-color;
-
-  @include mobile {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 1rem;
-  }
-
-  .footer-info {
-    flex: 1 1 220px;
-    min-width: 0;
-    font-size: 0.8rem;
-    color: $text-muted;
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid $border-color;
 
     @include mobile {
-      flex: 0 0 auto;   // ← add this: cancel the 220px height basis
-      order: 2;
-      text-align: center;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 1rem;
+    }
+
+    .footer-info {
+      flex: 1 1 220px;
+      min-width: 0;
+      font-size: 0.8rem;
+      color: $text-muted;
+
+      @include mobile {
+        flex: 0 0 auto; // cancel the 220px height basis
+        order: 2;
+        text-align: center;
+      }
     }
   }
-}
- 
 }
 
 // ── Panels ───────────────────────────────────────────────────────────────────
@@ -159,7 +157,7 @@ $bp-desktop: 1280px;
   padding: 1.5rem;
 
   @include tablet { padding: 1.25rem; }
-  @include mobile  { padding: 1rem; gap: 0.85rem; }
+  @include mobile { padding: 1rem; gap: 0.85rem; }
 
   &__header {
     display: flex;
@@ -213,6 +211,8 @@ $bp-desktop: 1280px;
     }
   }
 
+  // Left panel (job description) positions its char counter slightly
+  // further in, to clear the larger textarea's padding.
   &--left {
     position: relative;
 
@@ -284,7 +284,9 @@ $bp-desktop: 1280px;
   pointer-events: none;
 }
 
-// ── Upload / dropzone ────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// Upload / dropzone
+// ═══════════════════════════════════════════════════════════════════════════
 .upload-section {
   display: flex;
   flex-direction: column;
@@ -433,7 +435,7 @@ $bp-desktop: 1280px;
   line-height: 1.4;
 }
 
-// ── OR divider ───────────────────────────────────────────────────────────────
+// ── OR divider / self description ───────────────────────────────────────────
 .or-divider {
   display: flex;
   align-items: center;
@@ -484,7 +486,242 @@ $bp-desktop: 1280px;
   }
 }
 
-// ── Generate button ──────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// Candidate profile (build / ready / replace)
+// ═══════════════════════════════════════════════════════════════════════════
+.build-profile-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: 1px solid rgba($accent, 0.35);
+  border-radius: 0.5rem;
+  background: rgba($accent, 0.02);
+  color: $text-primary;
+  font-family: $font-stack;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease,
+    box-shadow 0.2s ease;
+
+  svg {
+    flex-shrink: 0;
+    color: $accent; // gives the sparkle icon its color
+  }
+
+  &:not(:disabled):hover {
+    background: rgba($accent, 0.14);
+    border-color: rgba($accent, 0.55);
+    box-shadow: 0 4px 14px rgba($accent, 0.15);
+  }
+
+  &:not(:disabled):active { transform: scale(0.98); }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @include mobile {
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+.profile-ready {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(94, 181, 221, 0.06);
+  border: 1px solid rgba(94, 181, 221, 0.22);
+  border-radius: 10px;
+
+  @include mobile {
+    padding: 11px;
+    gap: 9px;
+  }
+
+  &__icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(94, 181, 221, 0.12);
+    color: #5eb5dd;
+
+    @include mobile { width: 30px; height: 30px; }
+  }
+
+  &__content {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    strong {
+      color: #e6edf3;
+      font-size: 13px;
+      font-weight: 600;
+
+      @include mobile { font-size: 12px; }
+    }
+
+    span {
+      color: #7d8590;
+      font-size: 11px;
+      line-height: 1.4;
+
+      @include mobile { font-size: 10px; }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  &__edit,
+  &__replace {
+    padding: 7px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+
+    @include mobile { padding: 6px 10px; font-size: 11px; }
+
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+
+  &__edit {
+    border: 1px solid #2a3348;
+    background: #1e2535;
+    color: #e6edf3;
+
+    &:hover:not(:disabled) {
+      border-color: #5eb5dd;
+      color: #5eb5dd;
+      background: rgba(94, 181, 221, 0.08);
+    }
+  }
+
+  &__replace {
+    border: 1px solid rgba(255, 100, 100, 0.2);
+    background: transparent;
+    color: #a9b1bb;
+
+    &:hover:not(:disabled) {
+      border-color: rgba(255, 100, 100, 0.5);
+      color: #ff8f8f;
+      background: rgba(255, 100, 100, 0.06);
+    }
+  }
+}
+
+.replace-profile-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(5, 8, 12, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.replace-profile-modal {
+  width: min(100%, 420px);
+  padding: 24px;
+  background: #161b22;
+  border: 1px solid #2a3348;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  text-align: center;
+
+  &__icon {
+    width: 42px;
+    height: 42px;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgba(94, 181, 221, 0.1);
+    color: #5eb5dd;
+  }
+
+  h3 {
+    margin: 0 0 8px;
+    color: #e6edf3;
+    font-size: 17px;
+    font-weight: 650;
+  }
+
+  p {
+    margin: 0;
+    color: #7d8590;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 22px;
+  }
+
+  &__cancel,
+  &__confirm {
+    min-height: 38px;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  &__cancel {
+    border: 1px solid #2a3348;
+    background: #1e2535;
+    color: #aeb7c4;
+
+    &:hover {
+      border-color: #3b465d;
+      color: #e6edf3;
+    }
+  }
+
+  &__confirm {
+    border: 1px solid rgba(255, 100, 100, 0.35);
+    background: rgba(255, 100, 100, 0.1);
+    color: #ff8f8f;
+
+    &:hover {
+      border-color: rgba(255, 100, 100, 0.55);
+      background: rgba(255, 100, 100, 0.16);
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Generate button + generation overlay
+// ═══════════════════════════════════════════════════════════════════════════
 .generate-btn {
   display: inline-flex;
   align-items: center;
@@ -520,14 +757,12 @@ $bp-desktop: 1280px;
   &--loading { cursor: wait; }
 }
 
-// ── Spinner ──────────────────────────────────────────────────────────────────
 .spin { animation: spin 0.8s linear infinite; }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-// ── Generation overlay ───────────────────────────────────────────────────────
 .generation-overlay {
   position: fixed;
   inset: 0;
@@ -687,138 +922,25 @@ $bp-desktop: 1280px;
   100% { transform: translateX(250%); }
 }
 
-// ── Recent reports ───────────────────────────────────────────────────────────
-.recent-reports {
-  width: 100%;
-  max-width: 900px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-
-  h2 {
-    font-size: 1.1rem;
-    font-weight: 600;
-
-    @include mobile { font-size: 1rem; }
-  }
-
-  .reports-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-
-    @include mobile { flex-direction: column; }
-  }
-
-  .report-item {
-    flex: 1;
-    flex-shrink: 0;
-    min-width: 240px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 1rem;
-    border: 1px solid $border-color;
-    border-radius: 0.5rem;
-    background-color: $bg-card;
-    transition: border-color 0.2s, transform 0.1s;
-
-    @include mobile { min-width: 100%; }
-
-    &:hover { border-color: rgba($accent, 0.4); }
-
-    &__content {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      cursor: pointer;
-
-      h3 {
-        margin: 0;
-        overflow: hidden;
-        font-size: 0.9rem;
-        font-weight: 600;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .report-meta {
-        margin: 0;
-        color: $text-muted;
-        font-size: 0.75rem;
-      }
-    }
-
-    &__delete {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      width: 32px;
-      height: 32px;
-      border: 1px solid $border-color;
-      border-radius: 0.4rem;
-      background: transparent;
-      color: $text-muted;
-      cursor: pointer;
-      transition: all 0.15s ease;
-
-      &:hover {
-        border-color: #ef4444;
-        background: rgba(239, 68, 68, 0.08);
-        color: #ef4444;
-      }
-    }
-
-    .match-score {
-      margin: 0;
-      color: $accent;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-  }
-}
-
-// ── Page footer ──────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// Page footer
+// ═══════════════════════════════════════════════════════════════════════════
+// Note: only the "© year InterviewAI" text is currently rendered — the
+// privacy/terms/help links in Home.jsx are commented out. Restyle the
+// anchors here if/when those links are reinstated.
 .page-footer {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 1.5rem;
   text-align: center;
-
-  // @include mobile { gap: 1rem 1.25rem; }
-
-  // a {
-  //   color: $text-muted;
-  //   font-size: 0.8rem;
-  //   text-decoration: none;
-  //   transition: color 0.2s;
-
-  //   &:hover { color: $text-primary; }
-  // }
+  color: $text-muted;
+  font-size: 0.8rem;
 }
 
-// ── Loading screen ───────────────────────────────────────────────────────────
-.loading-screen {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  background-color: $bg-page;
-  color: $text-primary;
-  font-family: $font-stack;
-  text-align: center;
-
-  h1 { font-size: 1.25rem; font-weight: 600; }
-}
-
-// ── Reduced motion ───────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// Reduced motion
+// ═══════════════════════════════════════════════════════════════════════════
 @media (prefers-reduced-motion: reduce) {
   .generation-overlay,
   .generation-modal,
@@ -830,4 +952,3 @@ $bp-desktop: 1280px;
     animation: none;
   }
 }
-

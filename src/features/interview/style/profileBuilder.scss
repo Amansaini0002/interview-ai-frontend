@@ -1,0 +1,483 @@
+@use "sass:color";
+
+// ── Design tokens ────────────────────────────────────────────────────────────
+$bg-page:      #0d1117;
+$bg-card:      #161b22;
+$bg-input:     #1e2535;
+$border-color: #2a3348;
+$text-primary: #e6edf3;
+$text-muted:   #7d8590;
+$accent:       #2aa2da;
+$danger:       #ff2d78;
+$info-bg:      #1b2a4a;
+$info-border:  #2d4a7a;
+$font-stack:   system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+// ── Breakpoints ──────────────────────────────────────────────────────────────
+$bp-mobile: 480px;
+$bp-small:  600px;
+$bp-tiny:   360px;
+
+@mixin mobile { @media (max-width: $bp-mobile) { @content; } }
+@mixin small  { @media (max-width: $bp-small)  { @content; } }
+@mixin tiny   { @media (max-width: $bp-tiny)   { @content; } }
+
+@mixin focus-ring {
+  outline: none;
+  border-color: $accent;
+  box-shadow: 0 0 0 3px rgba($accent, 0.18);
+}
+
+// ── Overlay ────────────────────────────────────────────────────────────────
+.profile-builder-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(24px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  background: rgba(6, 8, 12, 0.76);
+  backdrop-filter: blur(6px);
+  font-family: $font-stack;
+
+  @include mobile {
+    padding: max(14px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right))
+      max(14px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  }
+
+  @include tiny {
+    padding: max(8px, env(safe-area-inset-top)) max(6px, env(safe-area-inset-right))
+      max(8px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left));
+  }
+}
+
+// ── Card ─────────────────────────────────────────────────────────────────────
+.profile-builder {
+  width: 100%;
+  max-width: 480px;
+  max-height: min(88dvh, 700px);
+  display: flex;
+  flex-direction: column;
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: 16px;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), 0 0 30px rgba($accent, 0.05);
+  color: $text-primary;
+  overflow: hidden;
+
+  @include mobile {
+    max-width: 100%;
+    max-height: min(92dvh, 720px);
+    border-radius: 14px;
+  }
+
+  @include tiny {
+    border-radius: 10px;
+  }
+
+  // ── Header ──────────────────────────────────────────────────────────────
+  &_header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid $border-color;
+
+    @include mobile { padding: 12px 14px; }
+    @include tiny   { padding: 10px 12px; }
+  }
+
+  &__header-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+
+    @include mobile { align-items: center; }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(0.85rem, 3vw + 0.3rem, 0.98rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: $text-primary;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    p {
+      margin: 2px 0 0;
+      font-size: clamp(0.68rem, 2vw + 0.2rem, 0.76rem);
+      color: $text-muted;
+      line-height: 1.4;
+      max-width: 36ch;
+
+      @include mobile { display: none; }
+    }
+  }
+
+  &__header-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba($accent, 0.12);
+    color: $accent;
+
+    @include mobile { width: 28px; height: 28px; }
+    @include tiny   { width: 26px; height: 26px; }
+  }
+
+  &_close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid $border-color;
+    background: transparent;
+    color: $text-muted;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      background: rgba($danger, 0.08);
+      border-color: rgba($danger, 0.4);
+      color: $danger;
+    }
+
+    &:focus-visible { @include focus-ring; }
+  }
+
+  // ── Step indicator ──────────────────────────────────────────────────────
+  &__steps {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    border-bottom: 1px solid $border-color;
+
+    @include mobile { padding: 10px 12px; }
+    @include tiny   { padding: 8px 10px; }
+  }
+
+  &__step {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: $text-muted;
+    min-width: 0;
+
+    &-dot {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid $border-color;
+      background: $bg-input;
+      color: $text-muted;
+      font-size: 0.72rem;
+      font-weight: 600;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+      @include tiny { width: 20px; height: 20px; font-size: 0.68rem; }
+    }
+
+    &-label {
+      font-size: clamp(0.68rem, 2vw + 0.2rem, 0.76rem);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      @include mobile { display: none; }
+    }
+
+    &.is-active {
+      color: $text-primary;
+
+      .profile-builder__step-dot {
+        border-color: $accent;
+        background: rgba($accent, 0.14);
+        color: $accent;
+      }
+    }
+
+    &.is-done .profile-builder__step-dot {
+      border-color: $accent;
+      background: $accent;
+      color: #fff;
+    }
+  }
+
+  &__step-connector {
+    flex: 1;
+    height: 1px;
+    margin: 0 8px;
+    background: $border-color;
+    transition: background 0.15s ease;
+
+    &.is-done { background: $accent; }
+
+    @include tiny { margin: 0 5px; }
+  }
+
+  // ── Form shell ──────────────────────────────────────────────────────────
+  form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 22px 20px;
+
+    @include mobile { padding: 0 16px 24px; }
+    @include tiny   { padding: 0 12px 20px; }
+  }
+
+  &_section,
+  &__section {
+    padding: 12px 0;
+    border-bottom: 1px solid $border-color;
+
+    &:last-of-type { border-bottom: none; }
+  }
+
+  &_section-title,
+  &__section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+
+    svg {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      padding: 5px;
+      box-sizing: border-box;
+      border-radius: 7px;
+      background: rgba($accent, 0.12);
+      color: $accent;
+
+      @include tiny { width: 22px; height: 22px; padding: 4px; }
+    }
+
+    h3 {
+      margin: 0;
+      font-size: clamp(0.82rem, 2.5vw + 0.3rem, 0.9rem);
+      font-weight: 600;
+      color: $text-primary;
+    }
+
+    .optional-label {
+      margin-left: auto;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: $text-muted;
+      background: $bg-input;
+      border: 1px solid $border-color;
+      border-radius: 999px;
+      padding: 2px 9px;
+      white-space: nowrap;
+    }
+  }
+
+  &_grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 10px;
+
+    @include small { grid-template-columns: 1fr; gap: 10px; }
+
+    .profile-builder_field,
+    .profile-builder__field {
+      margin-bottom: 0;
+    }
+  }
+
+  // ── Fields (labels, inputs, selects, textareas) ────────────────────────
+  &_field,
+  &__field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+
+    &:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      font-size: clamp(0.72rem, 2vw + 0.25rem, 0.78rem);
+      font-weight: 600;
+      color: $text-primary;
+      margin-bottom: 5px;
+
+      // required-field asterisk — fixed px size + transform, not em/vertical-align,
+      // so it renders consistently across browsers regardless of label font-size
+      span {
+        display: inline-block;
+        color: $danger;
+        margin-left: 2px;
+        font-size: 10px;
+        font-weight: 700;
+        transform: translateY(-2px);
+      }
+    }
+
+    small {
+      margin-top: 5px;
+      font-size: 0.72rem;
+      color: $text-muted;
+    }
+
+    input,
+    select,
+    textarea {
+      font: inherit;
+      color: $text-primary;
+      background: $bg-input;
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      padding: 8px 10px;
+      // 16px minimum on touch devices — anything smaller triggers iOS Safari's
+      // auto-zoom on focus (the "jumping text" effect on mobile).
+      font-size: max(0.85rem, 16px);
+      width: 100%;
+      box-sizing: border-box;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+      @include mobile { padding: 9px 10px; }
+
+      &:focus { @include focus-ring; }
+    }
+
+    // Single-line placeholders (Full Name, Location, Certifications, etc.)
+    input::placeholder,
+    select::placeholder {
+      color: $text-muted;
+      font-size: clamp(0.72rem, 1.8vw + 0.2rem, 0.8rem);
+      opacity: 1; // Firefox dims placeholders by default — normalize it
+    }
+
+    // Multi-line example placeholders (Education, Skills, Projects) — smaller,
+    // since they carry more text and need to read as secondary hint content.
+    textarea::placeholder {
+      color: $text-muted;
+      font-size: clamp(0.66rem, 1.6vw + 0.15rem, 0.74rem);
+      line-height: 1.5;
+      opacity: 1;
+    }
+
+    textarea {
+      resize: vertical;
+      line-height: 1.45;
+      min-height: 52px;
+    }
+
+    textarea[rows="4"],
+    textarea[rows="5"] {
+      min-height: 76px;
+    }
+
+    select {
+      appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, $text-muted 50%),
+        linear-gradient(135deg, $text-muted 50%, transparent 50%);
+      background-position: calc(100% - 16px) center, calc(100% - 11px) center;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      padding-right: 30px;
+    }
+  }
+
+  // ── Info callout ────────────────────────────────────────────────────────
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 16px;
+    padding: 10px 12px;
+    background: $info-bg;
+    border: 1px solid $info-border;
+    border-radius: 8px;
+
+    strong {
+      font-size: clamp(0.74rem, 2vw + 0.25rem, 0.78rem);
+      color: $text-primary;
+    }
+
+    p {
+      margin: 0;
+      font-size: clamp(0.7rem, 2vw + 0.2rem, 0.75rem);
+      color: #8ab4f8;
+      line-height: 1.45;
+    }
+  }
+
+  // ── Footer ──────────────────────────────────────────────────────────────
+  &_footer {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+
+    @include mobile { flex-direction: column-reverse; }
+  }
+
+  &_cancel,
+  &_submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font: inherit;
+    font-weight: 600;
+    font-size: clamp(0.8rem, 2vw + 0.3rem, 0.85rem);
+    padding: 9px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease,
+      background 0.15s ease, border-color 0.15s ease;
+
+    @include mobile { width: 100%; padding: 11px 18px; }
+
+    &:active { transform: scale(0.98); }
+    &:focus-visible { @include focus-ring; }
+  }
+
+  &_cancel {
+    background: transparent;
+    color: $text-muted;
+    border: 1px solid $border-color;
+
+    &:hover { background: $bg-input; color: $text-primary; }
+  }
+
+  &_submit {
+    background: linear-gradient(135deg, $accent 0%, color.adjust($accent, $lightness: -10%) 100%);
+    color: #fff;
+    border: none;
+
+    &:hover {
+      box-shadow: 0 7px 20px rgba($accent, 0.28);
+      transform: translateY(-1px);
+    }
+  }
+}
